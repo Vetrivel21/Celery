@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'task',
     'django_celery_beat',
     'app1',
+    'django_celery_results',
+    'mail_app',
 ]
 
 MIDDLEWARE = [
@@ -125,10 +127,19 @@ EMAIL_HOST_USER = 'vetrisenthilmkce@gmail.com'
 EMAIL_HOST_PASSWORD = 'gymdthxdqcrcqesj'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'vetrisenthilmkce@gmail.com'
+DEFAULT_FROM_EMAIL = 'Celery <vetrisenthilmkce@gmail.com>'
 
 STATIC_URL = 'static/'
 
+CELERY_BROKER_URL= 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
