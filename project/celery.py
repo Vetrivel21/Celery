@@ -8,22 +8,24 @@ from datetime import datetime, timedelta
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 
 app = Celery('project')
+app.conf.enable_utc = False
+app.conf.update(timezone = 'Asia/Kolkata')
+app.config_from_object(settings, namespace='CELERY')
 
-app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.conf.beat_schedule = {
-    'add-every-10-minute': {
-        'task': 'send_notification',
-        'schedule': crontab(minute='*/1'),
-        #'args': ('vetrisenthilmkce@gmail.com', 'Hi how are you')
+    'send-mail-every-10-minute': {
+        'task': 'mail_app.tasks.send_mail_func',
+        'schedule': crontab(minute='*/10'),
+        # 'args': (2,)
     }
+
 }
+#app.conf.timezone = 'UTC'
 
-app.conf.timezone = 'UTC'
+app.autodiscover_tasks()
 
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
-'''@app.task(bind=True)
+@app.task(bind=True)
 def debug_task(self):
-    print('Request: {0!r}'.format(self.request))'''
-
+    print(f'Request: {self.request!r}')
